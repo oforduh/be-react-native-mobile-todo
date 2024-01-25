@@ -7,7 +7,6 @@ import { BadRequestError } from "../errors/bad-request-error";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
 
 const signUp = async (req: Request, res: Response) => {
-  const { email } = req.body;
   try {
     const newUser = await UserModel.create(req.body);
     const token = await newUser.generateAuthToken();
@@ -35,11 +34,7 @@ const login = async (req: Request, res: Response) => {
         res,
       });
 
-    console.log(user);
-
     const validatePassword = await user.validatePassword(password);
-
-    console.log(validatePassword);
 
     if (!validatePassword)
       return badRequest({

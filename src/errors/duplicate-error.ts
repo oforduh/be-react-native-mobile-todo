@@ -24,12 +24,6 @@ export const handleDuplicateError = (
     message: `${Object.keys(keyPattern)[0]} already exists`,
   };
 
-  console.log(
-    "Duplicate Key Error. Message ===> %o, Error ===> %o",
-    errorData.message,
-    errorData
-  );
-
   res.status(BAD_REQUEST).send({
     status: false,
     error: errorData,

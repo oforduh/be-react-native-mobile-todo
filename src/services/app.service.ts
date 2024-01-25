@@ -38,11 +38,7 @@ app.use(compress({ filter: allowCompression }));
 app.use(helmet());
 
 // mount api v1 routes
-app.use("/api/auth", routes);
-
-app.get("/auth/api/check", (req, res) => {
-  res.status(200).send("This is hitting");
-});
+app.use("/", routes);
 
 app.all("*", () => {
   throw new NotFoundError();

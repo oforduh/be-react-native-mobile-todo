@@ -1,7 +1,8 @@
 import express from "express";
 
 import authResource from "./auth.routes";
-import hooksResource from "./hooks.routes";
+import categoryResource from "./category.routes";
+import taskResource from "./task.route";
 
 const router = express.Router();
 
@@ -11,7 +12,8 @@ const router = express.Router();
  */
 // router.use("/docs", express.static("docs"));
 
-router.use("/", authResource);
-router.use("/web/hooks", hooksResource);
+router.use("/api/auth", authResource);
+router.use("/api/category", categoryResource);
+router.use("/api/task", taskResource);
 
 export default router;

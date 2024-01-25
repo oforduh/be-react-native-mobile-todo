@@ -9,15 +9,7 @@ declare global {
 
     interface Request {
       token: Jwt | string;
-      rateLimit:RateLimit
+      rateLimit: RateLimit;
     }
   }
-}
-
-
-interface RateLimit{
-  limit:number,
-  current:number,
-  remaining:number,
-  resetTime:Date,
 }

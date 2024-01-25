@@ -9,9 +9,15 @@ interface Args {
   message: string;
   data?: any;
   error?: any;
+  totalDocuments?: number;
 }
 
-export const successfulRequest = ({ res, message, data }: Args) => {
+export const successfulRequest = ({
+  res,
+  message,
+  data,
+  totalDocuments,
+}: Args) => {
   log.info(
     "Successful Request. Message: %o, Entity: %o, Data: %o",
     message,
@@ -24,6 +30,7 @@ export const successfulRequest = ({ res, message, data }: Args) => {
     resource: "Authentication",
     data,
     code: status.OK,
+    totalDocuments,
   });
 };
 

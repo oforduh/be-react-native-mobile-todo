@@ -92,8 +92,6 @@ export class User {
         secret!
       );
 
-      console.log(token);
-
       this.tokens.push({ token });
 
       await this.save();
