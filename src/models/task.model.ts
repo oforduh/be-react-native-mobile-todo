@@ -30,8 +30,11 @@ export class Task {
   @prop({ required: true, default: false })
   isCompleted: boolean;
 
-  @prop({ required: false })
-  date: Date;
+  @prop({ default: false })
+  isEditable: boolean;
+
+  @prop({ required: true })
+  date: string;
 
   @prop({ required: true, ref: () => Category })
   categoryId: Ref<Category>;
