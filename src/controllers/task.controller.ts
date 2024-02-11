@@ -2,11 +2,13 @@ import { badRequest, notFound, successfulRequest } from "../helpers/responses";
 import CategoryModel from "../models/category.model";
 import { Request, Response } from "express";
 import { applyPagination } from "../utils/pagination";
-import { mongoose } from "@typegoose/typegoose";
+// import { mongoose } from "@typegoose/typegoose";
 import TaskModel from "../models/task.model";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);
+import mongoose, { ClientSession } from "mongoose";
+
 const fetchTasks = async (req: Request, res: Response) => {
   const { _id } = req.user!;
 
@@ -93,7 +95,7 @@ const fetchTasksByCategory = async (req: Request, res: Response) => {
 const fetchTasksForToday = async (req: Request, res: Response) => {
   const { _id } = req.user!;
   const currentDate = new Date();
-  const [date, time] = dayjs(currentDate).format("L LT").split(" ");
+  const [date] = dayjs(currentDate).format("L LT").split(" ");
 
   const total = await TaskModel.find({
     userId: _id,
@@ -166,7 +168,11 @@ const fetchCompletedTasks = async (req: Request, res: Response) => {
 const createTask = async (req: Request, res: Response) => {
   const { _id } = req.user!;
   const { categoryId } = req.body;
+
+  const session: ClientSession = await mongoose.startSession();
+
   try {
+    session.startTransaction();
     const isValidObjectId = mongoose.Types.ObjectId.isValid(categoryId);
 
     if (!isValidObjectId)
@@ -175,7 +181,9 @@ const createTask = async (req: Request, res: Response) => {
         message: "invalid id format for category ",
       });
 
-    const checkIDexistense = await CategoryModel.findById({ _id: categoryId });
+    const checkIDexistense = await CategoryModel.findById({
+      _id: categoryId,
+    }).session(session);
 
     if (!checkIDexistense)
       return badRequest({
@@ -183,10 +191,17 @@ const createTask = async (req: Request, res: Response) => {
         message: "This Category does not exist in our app ",
       });
 
-    const category = await TaskModel.create({
-      ...req.body,
-      userId: _id,
-    });
+    // await session.commitTransaction();
+
+    const [category] = await TaskModel.create(
+      [
+        {
+          ...req.body,
+          userId: _id,
+        },
+      ],
+      { session }
+    );
     await category.populate([
       {
         path: "userId",
@@ -197,6 +212,8 @@ const createTask = async (req: Request, res: Response) => {
         select: "-_id",
       },
     ]);
+
+    await session.commitTransaction();
     successfulRequest({
       res,
       message: "Category created",
@@ -204,6 +221,8 @@ const createTask = async (req: Request, res: Response) => {
     });
   } catch (error) {
     throw error;
+  } finally {
+    session.endSession();
   }
 };
 

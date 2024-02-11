@@ -6,6 +6,12 @@ declare global {
     interface User extends UserType {
       _id: string;
     }
+    interface RateLimit {
+      limit: number;
+      current: number;
+      remaining: number;
+      resetTime: Date;
+    }
 
     interface Request {
       token: Jwt | string;

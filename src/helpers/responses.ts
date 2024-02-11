@@ -77,6 +77,15 @@ export const notAllowed = ({ res, message, error }: Args) => {
   });
 };
 
+export const tooManyRequests = ({ res, message, data }: Args) => {
+  res.status(status.TOO_MANY_REQUESTS).send({
+    status: false,
+    message,
+    data,
+    code: status.TOO_MANY_REQUESTS,
+  });
+};
+
 export const redirect = ({ res, message, data }: Args) => {
   res.status(status.TEMPORARY_REDIRECT).send({
     status: true,

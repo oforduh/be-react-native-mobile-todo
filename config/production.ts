@@ -6,13 +6,4 @@ export default {
   logLevel: "info",
   logs: "prod",
   env: process.env.NODE_ENV,
-  googleClientId: process.env.GOOGLE_CLIENT_ID,
-  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  sendgridApiKey: process.env.SENDGRID_API_KEY,
-
-  redirectUrl: "https://app.current.ng",
-  callBackUrl: "https://auth.current.ng/api/auth/issuer/google/callback",
-
-  clapi: "https://clapi.current.ng/api/core/webhook/business",
-  reapi: "https://reapi.current.ng/api/core/webhook/business",
 };

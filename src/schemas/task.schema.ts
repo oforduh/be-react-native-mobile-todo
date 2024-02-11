@@ -6,7 +6,7 @@ const createTask = z.object({
   body: z.object({
     name: z
       .string({
-        invalid_type_error: "first name must be a string",
+        invalid_type_error: " name must be a string",
       })
       .min(1, { message: "Name be contain at least 1 character(s)" }),
     isCompleted: z
@@ -28,8 +28,9 @@ const createTask = z.object({
     categoryId: z
       .string({
         invalid_type_error: "category id must be a string",
+        required_error: "category id must be a string",
       })
-      .min(1, { message: "you must add a category" }),
+      .min(1, { message: "you must select a category" }),
   }),
 });
 const editTaskDetails = z.object({

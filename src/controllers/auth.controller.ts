@@ -88,36 +88,6 @@ const logout = async (req: Request, res: Response) => {
   }
 };
 
-const googleAuth = async (req: Request, res: Response) => {
-  try {
-    const user = await UserModel.findById(req.user?._id);
-    if (!user) throw new NotAuthorizedError("Failed to verify user");
-
-    const token = await user.generateAuthToken();
-
-    successfulRequest({
-      res,
-      message: "User Authenticated",
-      data: { user, token },
-    });
-  } catch (error) {
-    throw error;
-  }
-};
-
-const handlePhoneOtp = async (req: Request, res: Response) => {
-  const { otp } = req.body;
-
-  const user = await UserModel.findById(req.user!._id);
-
-  if (!user) throw new BadRequestError("User not found");
-  if (otp !== "1234") throw new BadRequestError("Invalid OTP");
-
-  await user.save();
-
-  successfulRequest({ res, message: "Phone number verified" });
-};
-
 const getStatus = async (req: Request, res: Response) => {
   res.send("This is hitting status end point");
   // return successfulRequest({ res, message: "Api is functional" });
@@ -127,8 +97,6 @@ export default {
   signUp,
   login,
   currentUser,
-  googleAuth,
   logout,
-  handlePhoneOtp,
   getStatus,
 };
