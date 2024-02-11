@@ -10,6 +10,7 @@ import {
 import argon2 from "argon2";
 import { sign } from "jsonwebtoken";
 import log from "../services/logger.service";
+import TokenModel, { TokenType } from "./token.model";
 
 const secret = process.env.JWT_SECRET;
 
@@ -51,6 +52,15 @@ export class User {
 
   @prop({ lowercase: true })
   name: string;
+
+  @prop({})
+  tfaTempSecret: string;
+
+  @prop({})
+  tfaSecret: string;
+
+  @prop({ default: false })
+  tfaEnabled: boolean;
 
   @prop({})
   tokens: Token[];
@@ -97,6 +107,29 @@ export class User {
       await this.save();
 
       return token;
+    } catch (error) {
+      throw error;
+    }
+  }
+  // check if the credentials already exist in the database using static method a
+  async generateRequestToken(this: DocumentType<User>, type: TokenType) {
+    try {
+      function generateSixDigitNumber() {
+        const min = 100000;
+        const max = 999999;
+
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      const randomNumber = generateSixDigitNumber();
+      const expireHr = new Date(Date.now() + 1000 * 60 * 60);
+      const Token = await TokenModel.create({
+        userId: this._id,
+        token: randomNumber,
+        type,
+        expiresAt: expireHr,
+      });
+      return randomNumber;
     } catch (error) {
       throw error;
     }

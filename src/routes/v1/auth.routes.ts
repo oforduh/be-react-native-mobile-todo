@@ -20,5 +20,12 @@ router.post(
 router.get("/me", auth, controllers.currentUser);
 router.get("/logout", auth, controllers.logout);
 router.get("/status", controllers.getStatus);
+router.get("/request-2fa", auth, controllers.generateQRCode);
+router.post(
+  "/enable-2fa",
+  auth,
+  validateRequest(schemas.enableTwoFactorAuth),
+  controllers.enable2FA
+);
 
 export default router;

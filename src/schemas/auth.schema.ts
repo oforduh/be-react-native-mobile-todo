@@ -32,7 +32,19 @@ const login = z.object({
   }),
 });
 
+const enableTwoFactorAuth = z.object({
+  body: z.object({
+    code: z
+      .string({
+        required_error: "Code must be a string",
+        invalid_type_error: "Code must be a string",
+      })
+      .min(1, { message: "Code must be at least 6 characters long" }),
+  }),
+});
+
 export default {
   register,
   login,
+  enableTwoFactorAuth,
 };
