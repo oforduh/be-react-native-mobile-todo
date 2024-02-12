@@ -42,7 +42,3 @@ export class Task {
   @prop({ required: true, ref: () => User })
   userId: Ref<User>;
 }
-
-const TaskModel = getModelForClass(Task);
-
-export default TaskModel;

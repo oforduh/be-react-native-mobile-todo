@@ -54,7 +54,3 @@ export class Category {
   @prop({ required: true, ref: () => User })
   userId: Ref<User>;
 }
-
-const CategoryModel = getModelForClass(Category);
-
-export default CategoryModel;

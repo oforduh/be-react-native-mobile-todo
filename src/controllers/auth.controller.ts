@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import parser from "ua-parser-js";
-import UserModel, { User } from "../models/user.model";
+import { User } from "../models/user.model";
 
 import { successfulRequest, redirect, badRequest } from "../helpers/responses";
 import { BadRequestError } from "../errors/bad-request-error";
@@ -8,6 +8,8 @@ import { NotAuthorizedError } from "../errors/not-authorized-error";
 import qrcode from "qrcode";
 import { authenticator } from "@otplib/preset-default";
 import { TokenType } from "../models/token.model";
+
+import { UserModel } from "../models/index.model";
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -149,6 +151,8 @@ const enable2FA = async (req: Request, res: Response) => {
       });
 
     user.tfaEnabled = true;
+    user.tfaSecret = user.tfaTempSecret;
+
     user.tfaTempSecret = "";
     await user.save();
     successfulRequest({

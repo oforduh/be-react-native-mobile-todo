@@ -1,9 +1,10 @@
+import { TaskModel, CategoryModel } from "./../models/index.model";
 import { badRequest, notFound, successfulRequest } from "../helpers/responses";
-import CategoryModel from "../models/category.model";
+
 import { Request, Response } from "express";
 import { applyPagination } from "../utils/pagination";
 // import { mongoose } from "@typegoose/typegoose";
-import TaskModel from "../models/task.model";
+
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);

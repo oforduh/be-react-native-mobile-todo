@@ -10,7 +10,9 @@ import {
 import argon2 from "argon2";
 import { sign } from "jsonwebtoken";
 import log from "../services/logger.service";
-import TokenModel, { TokenType } from "./token.model";
+
+import { TokenModel } from "./index.model";
+import { TokenType } from "./token.model";
 
 const secret = process.env.JWT_SECRET;
 
@@ -135,7 +137,3 @@ export class User {
     }
   }
 }
-
-const UserModel = getModelForClass(User);
-
-export default UserModel;

@@ -1,5 +1,6 @@
+import { CategoryModel } from "./../models/index.model";
 import { badRequest, notFound, successfulRequest } from "../helpers/responses";
-import CategoryModel from "../models/category.model";
+
 import { Request, Response } from "express";
 import { applyPagination } from "../utils/pagination";
 import { mongoose } from "@typegoose/typegoose";

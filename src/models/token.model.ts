@@ -3,9 +3,6 @@ import {
   modelOptions,
   prop,
   Severity,
-  pre,
-  DocumentType,
-  ReturnModelType,
   Ref,
 } from "@typegoose/typegoose";
 import { User } from "./user.model";
@@ -39,8 +36,8 @@ export class Token {
   @prop({})
   email: string;
 
-  @prop({ ref: () => User })
-  userId: Ref<User>;
+  @prop({ required: true })
+  userId: string;
 
   @prop({ required: true })
   token: number | string;
@@ -54,7 +51,3 @@ export class Token {
   @prop({})
   expiresAt: string;
 }
-
-const TokenModel = getModelForClass(Token);
-
-export default TokenModel;
