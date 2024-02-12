@@ -125,13 +125,14 @@ export class User {
 
       const randomNumber = generateSixDigitNumber();
       const expireHr = new Date(Date.now() + 1000 * 60 * 60);
-      const Token = await TokenModel.create({
+      const { token } = await TokenModel.create({
         userId: this._id,
         token: randomNumber,
         type,
         expiresAt: expireHr,
       });
-      return randomNumber;
+
+      return token;
     } catch (error) {
       throw error;
     }

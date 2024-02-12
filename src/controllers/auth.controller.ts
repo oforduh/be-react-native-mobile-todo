@@ -9,7 +9,8 @@ import qrcode from "qrcode";
 import { authenticator } from "@otplib/preset-default";
 import { TokenType } from "../models/token.model";
 
-import { UserModel } from "../models/index.model";
+import { TokenModel, UserModel } from "../models/index.model";
+import log from "../services/logger.service";
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -69,6 +70,56 @@ const login = async (req: Request, res: Response) => {
       data: { user, token },
     });
   } catch (error: any) {
+    throw error;
+  }
+};
+
+const loginWithAuthenticator = async (req: Request, res: Response) => {
+  try {
+    // Get remaining attempts from rateLimit
+    const { remaining } = req.rateLimit;
+
+    // Get user agent details
+    const { ua } = parser(req.headers["user-agent"]);
+    console.log(ua);
+    const genericMsg = `Invalid authentication code, you have ${remaining} attempts left`;
+
+    const { authToken, code } = req.body;
+
+    // Find the token object
+    // https://www.mongodb.com/docs/manual/reference/operator/query/lt/ docs
+    const token = await TokenModel.findOne({
+      token: authToken,
+      type: TokenType.AUTH_2FA,
+      valid: true,
+      expiresAt: { $gt: Date.now() },
+    });
+
+    // Throw an error if the token is not found
+    if (!token) throw new BadRequestError("Invalid or expired auth token");
+
+    // Fetch user details using provided email
+    const user = await UserModel.findById(token.userId);
+
+    // Throw generic error if there's no user
+    if (!user) throw new BadRequestError("user does not exist");
+
+    // Verify the user's code
+    const verified = authenticator.check(code, user.tfaSecret);
+
+    // Throw an error message if the verification fails
+    if (!verified) throw new BadRequestError("invalid authentication code");
+
+    token.valid = false;
+    await token.save();
+    const generatedToken = await user.generateAuthToken();
+
+    successfulRequest({
+      res,
+      message: "User Authenticated",
+      data: { user, token: generatedToken },
+    });
+  } catch (error) {
     throw error;
   }
 };
@@ -178,4 +229,5 @@ export default {
   getStatus,
   generateQRCode,
   enable2FA,
+  loginWithAuthenticator,
 };

@@ -27,5 +27,6 @@ router.post(
   validateRequest(schemas.enableTwoFactorAuth),
   controllers.enable2FA
 );
+router.post("/2fa-login", loginLimiter, controllers.loginWithAuthenticator);
 
 export default router;
